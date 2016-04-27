@@ -1,0 +1,66 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script type="text/javascript" src="~/scripts/angular.js"></script>
+
+    <style>
+        table, th, td {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: #f1f1f1;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var app = angular.module('main', []);
+        app.controller('mainController', function ($scope, $http) {
+
+            $scope.headers = ['ID', 'Nombre', 'Apellido'];
+
+            $scope.initialiser = function () {
+                $scope.searchSuccess = false;
+                $scope.result = [];
+            };
+            
+            $scope.buscar = function () {
+                $http.get('/Home/getUsers').then(function (response) {
+                    $scope.searchSuccess = true;
+                    $scope.result = response.data;
+                });
+            };
+
+            $scope.initialiser();
+
+        });
+    </script>
+</head>
+<body data-ng-app="main" data-ng-controller="mainController">
+    <button data-ng-click="buscar()">Buscar personas</button>
+    <section data-ng-show="searchSuccess==true">
+        <table>
+            <th ng-repeat="y in headers">{{y}}</th>
+            <tr ng-repeat="x in result">
+                <td>{{ x.ID }}</td>
+                <td>{{ x.Nombre }}</td>
+                <td>{{ x.Apellido }}</td>
+            </tr>
+        </table>
+    </section>
+</body>
+</html>
